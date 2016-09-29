@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="WebApp_ID" version="2.5">
+  <display-name>dflzmsms</display-name>
+  <description>东风柳汽短信模块</description>
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      classpath:spring-service-and-dao-config.xml
+    </param-value>
+  </context-param>
+  <!--
+  <context-param>
+      <param-name>webAppRootKey</param-name>
+      <param-value>vehicleinformation.root</param-value>
+  </context-param> -->
+  <!-- 监控过滤
+  <filter>
+      <filter-name>MonitorFilter</filter-name>
+      <filter-class>hoperun.pub.common.filter.MonitorRequestFilter</filter-class>
+  </filter>
+  <filter-mapping>
+      <filter-name>MonitorFilter</filter-name>
+      <url-pattern>/ping/run</url-pattern>
+  </filter-mapping>-->
+  <!-- 请求日志过滤
+  <filter>
+      <filter-name>RequestLogInfoFilter</filter-name>
+      <filter-class>hoperun.pub.common.filter.RequestLogInfoFilter</filter-class>
+      <init-param>
+          <param-name>urlPattern</param-name>
+          <param-value>^/*</param-value>
+      </init-param>
+  </filter>
+  <filter-mapping>
+      <filter-name>RequestLogInfoFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+  </filter-mapping>-->
+  <!-- Basic认证 -->
+  <!--
+  <filter>
+      <filter-name>RightVerifyFilter</filter-name>
+      <filter-class>hoperun.pub.basicauth.verify.RightVerifyFilter</filter-class>
+  </filter>
+  <filter-mapping>
+      <filter-name>RightVerifyFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+  </filter-mapping>
+   -->
+  <!-- Header验证过滤
+  <filter>
+      <filter-name>HeaderVerifyFilter</filter-name>
+      <filter-class>hoperun.pub.verify.http.filter.HeaderVerifyFilter</filter-class>
+  </filter>
+  <filter-mapping>
+      <filter-name>HeaderVerifyFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+  </filter-mapping>-->
+
+  <!-- App调用Api key验证
+  <filter>
+      <filter-name>SignVerifyFilter</filter-name>
+      <filter-class>hoperun.pub.common.filter.SignVerifyFilter</filter-class>
+  </filter>
+  <filter-mapping>
+      <filter-name>SignVerifyFilter</filter-name>
+      <url-pattern>/ev/vehicles/*</url-pattern>
+  </filter-mapping>-->
+  <!--
+  <listener>
+      <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+    -->
+  <listener>
+    <listener-class>hoperun.util.spring.listener.SpringLoaderContextListener</listener-class>
+  </listener>
+
+  <!-- log4j2-begin -->
+  <listener>
+    <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+  </listener>
+  <filter>
+    <filter-name>log4jServletFilter</filter-name>
+    <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>log4jServletFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>INCLUDE</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+  <!-- log4j2-end -->
+
+  <servlet>
+
+    <servlet-name>dflzmsms</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring-servlet-config.xml</param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>dflzmsms</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <!--
+  <filter>
+      <filter-name>springSecurityFilterChain</filter-name>
+      <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+  <filter-mapping>
+      <filter-name>springSecurityFilterChain</filter-name>
+      <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
+  <listener>
+      <listener-class>hoperun.vehicle.information.kafka.KafkaListener</listener-class>
+  </listener>
+   -->
+  <filter>
+    <filter-name>httpMethodFilter</filter-name>
+    <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>httpMethodFilter</filter-name>
+    <servlet-name>dflzmsms</servlet-name>
+  </filter-mapping>
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <!-- 配置session 时间为24小时,1440 -->
+  <session-config>
+    <session-timeout>10</session-timeout>
+  </session-config>
+  <jsp-config>
+    <taglib>
+      <taglib-uri>/jstl/cout</taglib-uri>
+      <taglib-location>/WEB-INF/tld/c.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>/jstl/fmt</taglib-uri>
+      <taglib-location>/WEB-INF/tld/fmt.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>/jstl/fn</taglib-uri>
+      <taglib-location>/WEB-INF/tld/fn.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>/jstl/x</taglib-uri>
+      <taglib-location>/WEB-INF/tld/x.tld</taglib-location>
+    </taglib>
+  </jsp-config>
+  <distributable/>
+</web-app>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+	<!-- BaseUrl -->
+	<BaseUrl>
+		<!-- 鉴权和验证系统的BaseUrl和Basic认证, name = "verify" 在鉴权和验证管理器中提供了SDK/过滤器/拦截器，而SDK/过滤器/拦截器中真正的验证是在鉴权和验证管理模块。 
+			鉴权和验证管理模块是独立部署的，可以通过Http进行访问。 即各服务模块在引用鉴权和验证管理SDK/过滤器/拦截器时，需要配置鉴权和验证管理模块的BaseUrl 
+			<BaseUrlDetail name = "verify" value = "http://172.32.5.111:8080/rightmserver" 
+			/> -->
+	</BaseUrl>
+	<!-- 公共参数定义 -->
+	<CommonParam>
+		<!-- Basic认证方式， local=本地认证；remote=远程认证 <ParamDetail name = "basicAuthType" 
+			value = "local" /> -->
+	</CommonParam>
+	<!-- Basic认证参数 , userName=用户名；password=密码； <BasicAuthParam> <BasicAuthDetail 
+		userName = "siruntest" password = "123456"/> </BasicAuthParam> -->
+	<!-- 权限验证规范定义，按照顺序使用正则表达式进行匹配 <RightSpec baseUrl = "/vehicleinformation"> 
+		<Url pattern = "^/vehicles/\S[^/]*/(healthstatus|cancheck|healthcheck)$" 
+		/> <Url pattern = "^/vehicles/\S[^/]*/searchcan$" /> </RightSpec> -->
+</Config>

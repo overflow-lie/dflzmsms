@@ -1,0 +1,262 @@
+syntax = "proto2";
+import "nanopb.proto";
+
+//Before modify this file, please read the following instruction:
+//1. for message name, pleae use camel pattern: like MsgToServer
+//2. for the fileds in message definition, please use all low case word connected by "_". 
+
+//This is a sample message that shows the usage of bytes and array(repeated)
+//message SampleMsg
+//{
+//   required    int32   msg_type     =1;
+//    optional    bytes   buffer      = 2 [(nanopb).max_size = 40];
+//    repeated    int32   ack_to_server = 3[(nanopb).max_count = 16];
+//}
+
+enum AckFlag
+{
+    PROVISION_NOT_APPLIED_OR_CFG_NOT_STORED = 0;
+    PROVISION_APPLIED_OR_CFG_STORED         = 1;
+    SERVICE_CFG_NOT_APPLIED                 = 2;
+    SERVICE_CFG_APPLIED                     = 3;
+}
+
+message ApplicationHeader
+{   
+    required int32 ota_protocol_version   = 1;
+    required int32 msg_type               = 2;
+}
+
+message VehicleDescriptor
+{
+    required int32  vehicle_type = 1;
+    required string vin          = 2[(nanopb).max_size = 32];
+    required string tbox_id      = 3;
+    required string imei         = 4;
+    optional string imsi         = 5;
+    optional int32  ign_status   = 6;
+}
+
+message TimeStamp
+{
+    required int32 year     = 1;
+    required int32 month    = 2;
+    required int32 day      = 3;
+    required int32 hour     = 4;
+    required int32 minute   = 5;
+    required int32 second   = 6;
+}
+
+message AuthenticationResult
+{
+    required bool auth_result = 1; 
+}
+
+message ProbeConfigurationData
+{
+    required fixed32 data_id        = 1;
+    required int32   can_frame_id   = 2;
+    required sfixed64 can_param_mask = 3;
+    required int32   can_read_freq  = 4;
+    required int32   compute_mode   = 5;
+    required int32   usage_type     = 6;
+    required int32   data_list_len  = 7;
+    required float   param_a        = 8;
+    required float   param_b        = 9;
+    required float   param_c        = 10;
+    required float   param_d        = 11;
+    required sfixed32 unavail_val    = 12;
+}
+
+message ConfigurationUnit
+{
+    required int32      service_id          = 1;
+    required fixed32    config_id           = 2;
+    required bytes      config_para_val     = 3 [(nanopb).max_size = 64];
+    optional ProbeConfigurationData    config_data = 4;
+}
+ 
+message ConfigurationBlock
+{  
+    repeated  ConfigurationUnit  cfg_unit_array = 1 [(nanopb).max_count = 32];
+}
+
+message ProbeDataUnit
+{
+    required fixed32      data_id = 1;
+    required int32   compute_mode = 2;
+    required int32      data_type = 3;
+    required bytes     data_value = 4 [(nanopb).max_size = 8];
+    optional int32      data_unit = 5;
+}
+
+
+message ProbeDataBlock
+{
+    required int32         probe_block_type = 1;
+    required TimeStamp           time_stamp = 2;
+    repeated ProbeDataUnit probe_data_array = 3 [(nanopb).max_count = 107];
+}
+
+message ManufactureDescriptor
+{
+    required int32      manufacturer_id          = 1;
+    required int32      tbox_manufacturer_id     = 2;
+    required fixed32    software_version         = 3;
+    required fixed32    hardware_version         = 4;
+}
+message AuthenticationInfo
+{
+    required    bytes pid     =1 [(nanopb).max_size = 12];
+    required    bytes pwd     =2 [(nanopb).max_size = 8];
+}
+message NaviPosition
+{
+    required    bool        valid       = 1;
+    required    int32       latitude    = 2;
+    required    int32       longitude   = 3;
+    required    TimeStamp   time_stamp  = 4;
+    optional    int32       direction   = 5;
+    optional    int32       speed       = 6;
+    optional    int32       altitude    = 7;
+}
+message ApplicationInformation
+{
+    required    int32   error_notification      = 1;
+    required    int32   vehicle_tracking_result = 2;
+    required    int32   vehicle_notify_result   = 3;
+    required    int32   vehicle_security_alarm  = 4;
+}
+message AuthenticationAndConfirmation
+{
+    required  ApplicationHeader     appli_header    = 1;
+    required  ManufactureDescriptor manufact_des    = 2;
+    required  VehicleDescriptor     vehicle_des     = 3;
+    required  int32                 dest_id         = 4;
+    required  int32                 source_id       = 5;
+    required  TimeStamp             time_stamp      = 6;
+    required  AuthenticationInfo    auth_info       = 7;
+    required  NaviPosition          navi_position   = 8;
+}
+
+message InvasionNotification
+{
+    required  int32         BCM1_Status_AntiThief       = 1;
+    required  int32         BCM1_Warn_IMMOStatus_Type   = 2;
+    required  TimeStamp     time_stamp                  = 3;  
+}
+
+message CollisionNotification
+{
+    required  int32         Crash_Output_Sts            = 1;
+    required  int32         Driver_Seat_Belt_Sts        = 2;
+    required  int32         Psngr_Seat_Belt_Sts         = 3;  
+    required  int32         Vehicle_reference_speed     = 4;  
+}
+
+message ServiceProvision
+{
+    required int32      service_id  = 1;
+    required bool       status      = 2;
+    optional AckFlag    ack_flag    = 3;
+}
+message SecurityAlarm
+{
+    required  ApplicationInformation    appli_info      = 1;
+    optional  InvasionNotification      invasion_info	=2;
+    optional  CollisionNotification     collision_info	=3;
+}
+
+message ServiceProvisionUpdate
+{
+    required  ApplicationHeader     appli_header    = 1;
+    required  VehicleDescriptor     vehicle_des     = 2;
+    required  int32                 dest_id         = 3;
+    required  int32                 source_id       = 4;
+    required  int32                 cmd_id          = 5;
+    required  TimeStamp             time_stamp      = 6;
+    required  AuthenticationResult  auth_result     = 7;
+    repeated  ServiceProvision      service_prov_set   = 8;
+}
+
+message ConfigUpdate
+{
+    required  ApplicationHeader     appli_header    = 1;
+    required  VehicleDescriptor     vehicle_des     = 2;
+    required  int32                 dest_id         = 3;
+    required  int32                 source_id       = 4;
+    required  int32                 cmd_id          = 5;
+    required  TimeStamp             time_stamp      = 6;
+    required  AuthenticationResult  auth_result     = 7;
+    required  ConfigurationBlock    cfg_blk         = 8;
+}
+
+message AcknowledgementMessage
+{
+    required  ApplicationHeader     appli_header    = 1;
+    required  VehicleDescriptor     vehicle_des     = 2;
+    required  int32                 dest_id         = 3;
+    required  int32                 source_id       = 4;
+    required  AckFlag               ack_flag        = 5;
+    repeated  ServiceProvision      service_prov_rslt = 6;
+}
+
+message RemoteFunctionCommand
+{
+    required  ApplicationHeader     appli_header    = 1;
+    required  VehicleDescriptor     vehicle_des     = 2;
+    required  int32                 dest_id         = 3;
+    required  int32                 source_id       = 4;
+    required  int32                 cmd_id          = 5;
+    required  TimeStamp             time_stamp      = 6;
+    required  AuthenticationResult  auth_result     = 7;
+}
+
+message RemoteVehicleSecurityFunction
+{
+    required  ApplicationHeader         appli_header    = 1;
+    required  ManufactureDescriptor     manufact_des    = 2;
+    required  VehicleDescriptor         vehicle_des     = 3;
+    required  int32                     dest_id         = 4;
+    required  int32                     source_id       = 5;
+    required  TimeStamp                 time_stamp      = 6;
+    required  AuthenticationInfo        auth_info       = 7;
+    required  NaviPosition              navi_position   = 8;
+    required  ApplicationInformation    appli_info      = 9;
+    optional  InvasionNotification      invasion_info	=10;
+    optional  CollisionNotification     collision_info	=11;
+}
+
+message ProbeUpload
+{
+    required  ApplicationHeader         appli_header    = 1;
+    required  ManufactureDescriptor     manufact_des    = 2;
+    required  VehicleDescriptor         vehicle_des     = 3;
+    required  int32                     dest_id         = 4;
+    required  int32                     source_id       = 5;
+    required  TimeStamp                 time_stamp      = 6;
+    required  AuthenticationInfo        auth_info       = 7;
+    required  NaviPosition              navi_position   = 8;
+    required  ProbeDataBlock            probe_data_blk  = 9;
+}
+
+message MessageHead
+{   
+    enum    MessageType     {
+            SERVICE_PROVISION_UPDATE        =   0;
+            CONFIG_UPDATE                   =   1;
+            AUTHENTICATION_CONFIRM          =   2;
+            ACK_FOR_CFG_UPDATE              =   3;
+            REMOTE_FUNCTION_COMMAND         =   4;
+            VEHICLE_SECURITY_FUNC           =   5;
+            PROBE_UPLOAD                    =   6;
+    }
+    required    MessageType     msg_type    = 1;
+}
+
+message WrapperMessage
+{
+    required    MessageHead Head            = 1;
+    required    int32       MsgCarrierLen   = 2;
+    required    bytes       MsgCarrier      = 3[(nanopb).max_size = 1024];
+}

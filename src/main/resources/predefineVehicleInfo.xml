@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 当前xml预定义了一些vin和bid对应关系,程序运行时直接导入 -->
+
+<vehicles>
+	<info vin="1234567890123456" vehicleType="0" tboxId="6543210987654321"
+	imei="abcdefghijklmno" imsi="hijklmnabcdefgo" manufacturerId="100"
+	tboxManufacturerId="200" softwareVersion="10" hardwardVersion="20" pid="123"
+	pwd="456" hmackey="12345678901234567890123456789012" aeskey="1234567890123456"></info>
+</vehicles>
+
+

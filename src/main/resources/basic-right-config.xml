@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+    <!-- Basic认证参数（其他系统能够访问的Basic账号） , userName=用户名；password=密码；usable=可用；
+    <BasicAuthParam>
+        <BasicAuthDetail userName = "eventtest" password = "123456" usable="true"/>
+        <BasicAuthDetail userName = "eventtest2" password = "123456" usable="false"/>
+    </BasicAuthParam>-->
+    <!-- 权限验证规范定义，按照顺序使用正则表达式进行匹配 
+    <RightSpec baseUrl = "">
+        <Url pattern = "^/\S*$" />
+    </RightSpec>
+    -->
+</Config>
